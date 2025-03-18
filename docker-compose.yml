@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: pdf-to-audio-backend
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/outputs:/app/outputs
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+    restart: unless-stopped
+    networks:
+      - pdf-to-audio-network
+
+  frontend:
+    build: ./frontend
+    container_name: pdf-to-audio-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - pdf-to-audio-network
+
+networks:
+  pdf-to-audio-network:
+    driver: bridge 
